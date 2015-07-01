@@ -4,7 +4,7 @@ var window = target.frontMostApp().mainWindow();
 
 //Ready to go
 window.buttons()[2].tap()
-if (window.navigationBars()[0].staticTexts()["Pickup Location"].isValid()){
+if (window.staticTexts()["Pickup Location"].isValid()){
     UIALogger.logPass("Pickup location screen displayed properly");
 }
 else{

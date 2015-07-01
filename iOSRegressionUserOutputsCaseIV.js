@@ -1,6 +1,5 @@
 //From Curb signin/signup screen
 var target = UIATarget.localTarget();
-
 var window = target.frontMostApp().mainWindow();
 
 //Go to Sign-In screen
