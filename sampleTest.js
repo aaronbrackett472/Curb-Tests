@@ -2,6 +2,7 @@
 
 //Get the window element
 var target = UIATarget.localTarget();
+
 var window = target.frontMostApp().mainWindow();
 
 //Go to settings
@@ -75,6 +76,7 @@ var saveButton = window.buttons()["Done Editing"];
 saveButton.tap();
 
 //Back and go back in
+
 target.delay(1);//wait for the page to reload
 window = target.frontMostApp().mainWindow();//Because of refresh, need to reacquire window
 var backButton = window.buttons()["Back"];

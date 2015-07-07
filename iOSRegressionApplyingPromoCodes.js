@@ -1,5 +1,4 @@
 //From Ready to Go/Pick Me Up Later
-//Use this on account with no credits for full effect
 var target = UIATarget.localTarget();
 var app = target.frontMostApp();
 var window = app.mainWindow();
@@ -44,8 +43,7 @@ else{
 }
 var latestRedemption = window.scrollViews()[0].tableViews()[0].cells()[0];
 if (latestRedemption.staticTexts()["$80.00"].isValid() &&
-    latestRedemption.staticTexts()["This is a Dev Test Code that will make you rich"].isValid() &&
-    latestRedemption.staticTexts()["11/08/18"].isValid()){
+    latestRedemption.staticTexts()["This is a Dev Test Code that will make you rich"].isValid()){
     UIALogger.logPass("Redemption displaying accurately in promo history");
 }
 else{

@@ -1,6 +1,7 @@
 
 var target = UIATarget.localTarget();
-var window = target.frontMostApp().mainWindow();
+var app = target.frontMostApp();
+var window = app.mainWindow();
 
 //Ready to go
 window.buttons()[2].tap()
@@ -16,21 +17,70 @@ window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
 //target.tapWithOptions({x:50, y:50});
 window.buttons()["Search For Location, Double Tap to start searching"].tap();
 target.frontMostApp().mainWindow().searchBars()[0].searchBars()[0].tap();
-target.frontMostApp().mainWindow().tableViews()[1].cells()[0].tap();
-target.frontMostApp().mainWindow().tableViews()[1].cells()[0].tap();
-//target.tap({x:349.50, y:346.00});
-target.frontMostApp().mainWindow().tableViews()[1].cells()["Add New Card"].tap();
-target.frontMostApp().mainWindow().elements()[7].tapWithOptions({tapOffset:{x:0.63, y:0.49}});
-target.frontMostApp().mainWindow().buttons()["Book Ride"].tap();
-target.frontMostApp().mainWindow().buttons()["Confirm"].tap();
-target.frontMostApp().mainWindow().buttons()["Got it"].tap();
-target.frontMostApp().mainWindow().buttons()["Settings"].tap();
-target.frontMostApp().mainWindow().tableViews()[0].tapWithOptions({tapOffset:{x:0.83, y:0.79}});
-target.frontMostApp().mainWindow().buttons()["Yes"].tap();
-target.frontMostApp().mainWindow().buttons()["Already have an account? Sign in!"].tap();
-target.frontMostApp().mainWindow().textFields()[0].textFields()[0].tap();
-target.frontMostApp().mainWindow().buttons()["Sign In"].tap();
-target.frontMostApp().mainWindow().buttons()["Settings"].tap();
-target.frontMostApp().mainWindow().tableViews()[0].tapWithOptions({tapOffset:{x:0.78, y:0.13}});
+target.delay(1);//loading options
+window.tableViews()[1].cells()[0].tap();
+while (!window.staticTexts()["Fleet Selection"].isValid()){
+    //Wait for fleets to be found
+}
+UIALogger.logPass("Correctly displayed Fleet Selection screen");
 
+//Select Alexandria Yellow Cab
+window.tableViews()[1].cells()["Alexandria Yellow Cab"].tap();
+if (window.staticTexts()["Confirmation"].isValid()){
+    UIALogger.logPass("Confirmation screen displayed");
+}
+else{
+    UIALogger.logFail("Did not display confirmation screen");
+}
+if (window.elements()["PICK-UP Location: 5904 Richmond Hwy\n Alexandria VA"] &&
+    window.elements()["Pickup time: Now"] &&
+    window.elements()["Fleet: Alexandria Yellow Cab"]){
+    UIALogger.logPass("Confirmation Details are correct");
+}
+else{
+    UIALogger.logFail("Detail(s) on the confirmation page incorrect");
+}
+
+//Select the Payment arrow
+window.images()["curb_forward_icon"].tap();
+
+/* If you have a credit card on file, you should be taken to the credit card screen
+ * But if not, you'll be taken directly to add a credit card. 
+ */
+
+app.keyboard().typeString("378282246310005");//Valid Amex Card Data from Wiki
+app.keyboard().typeString("722");//Random expiration date
+app.keyboard().typeString("4325");//Random CVV
+app.keyboard().typeString("22303");//AVA zip code
+
+if (window.staticTexts()["AMEX - 0005 + Applicable Fees"].isValid()){
+    UIALogger.logPass("Credit card is now the form of payment");
+}
+else{
+    UIALogger.logFail("Payment method did not change to the new credit card");
+}
+
+//Log out log back in
+window.buttons()["Settings"].tap();
+window.tableViews()[0].cells()["Logout"].tap();
+window.buttons()["Yes"].tap();
+var email = "curbautotests@gmail.com";
+var pass = "aaaaaa";
+window.staticTexts()["Sign in!"].tap();
+window.textFields()[0].setValue(email);
+window.secureTextFields()[0].setValue(pass);
+window.buttons()["Sign In"].tap();
+
+//Check if card persists
+window.buttons()["Settings"].tap();
+window.tableViews()[0].cells()["Credit Cards"].tap();
+
+window.logElementTree();
+
+if (window.tableViews()[0].cells()["Card 1 of 2: AMEX ending in: 0005"].isValid()){
+    UIALogger.logPass("Credit card infor persisted after logging out and then back in");
+}
+else{
+    UIALogger.logFail(" Previously entered credit card now gone");
+}
                                     

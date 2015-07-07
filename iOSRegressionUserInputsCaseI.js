@@ -19,7 +19,6 @@ for (var i = 0; i < pageIndicator.pageCount()-1; i++){
 }
 
 //backwards
-
 for (var i = pageIndicator.pageCount()-1; i > 0; i--){
     window.logElementTree();
     UIALogger.logMessage("Current Page: " + pageIndicator.pageIndex());
@@ -50,7 +49,7 @@ function closeKeyboard(){
 //Case 1: No first name (although everything is blank)
 create();
 var displayText1 = window.textViews()[0].value();
-var expectedText1 = "First Name is required."
+var expectedText1 = "First Name is required.";
 if (displayText1 == expectedText1){
     UIALogger.logPass("Correctly handled missing first name");
 }
@@ -67,7 +66,7 @@ window.scrollViews()[0].textFields().firstWithValueForKey("First Name", "value")
 closeKeyboard();
 create();
 var displayText2 = window.textViews()[0].value();
-var expectedText2 = "Last Name is required."
+var expectedText2 = "Last Name is required.";
 if (displayText2 == expectedText2){
     UIALogger.logPass("Correctly handled missing last name");
 }
@@ -84,7 +83,7 @@ window.scrollViews()[0].textFields().firstWithValueForKey("Last Name", "value").
 closeKeyboard();
 create();
 var displayText3 = window.textViews()[0].value();
-var expectedText3 = "Phone Number is required."
+var expectedText3 = "Phone Number is required.";
 if (displayText3 == expectedText3){
     UIALogger.logPass("Correctly handled missing phone number");
 }
@@ -99,7 +98,7 @@ window.buttons()[3].tap();
 //Case 4: Mobile Number invalid (too short) (First/Last entered, phone field tapped but empty)
 create();
 var displayText4 = window.textViews()[0].value();
-var expectedText4 = "The Phone number you entered is invalid."
+var expectedText4 = "The Phone number you entered is invalid.";
 if (displayText4 == expectedText4){
     UIALogger.logPass("Correctly handled invalid phone number");
 }
@@ -117,7 +116,7 @@ target.frontMostApp().keyboard().typeString("5555555555");
 closeKeyboard();
 create();
 var displayText5 = window.textViews()[0].value();
-var expectedText5 = "Email Address is required."
+var expectedText5 = "Email Address is required.";
 if (displayText5 == expectedText5){
     UIALogger.logPass("Correctly handled missing email address");
 }
@@ -134,7 +133,7 @@ window.scrollViews()[0].textFields().firstWithValueForKey("Email", "value").setV
 closeKeyboard();
 create();
 var displayText6 = window.textViews()[0].value();
-var expectedText6 = "The e-mail you entered is invalid."
+var expectedText6 = "The e-mail you entered is invalid.";
 if (displayText6 == expectedText6){
     UIALogger.logPass("Correctly handled invalid email");
 }
@@ -168,7 +167,7 @@ window.scrollViews()[0].secureTextFields()[0].setValue("aaaaaa");
 closeKeyboard();
 create();
 var displayText8 = window.textViews()[0].value();
-var expectedText8 = "Would you like to try and login with your email?"
+var expectedText8 = "Would you like to try and login with your email?";
 if (displayText8 == expectedText8){
     UIALogger.logPass("Correctly handled already used email");
 }
@@ -201,7 +200,7 @@ while (true){
 }
 
 //Case 9: Already used phone number
-var expectedText9 = "Would you like to try and login with your phone number?"
+var expectedText9 = "Would you like to try and login with your phone number?";
 if (displayText9 == expectedText9){
     UIALogger.logPass("Correctly handled already used phone number");
 }
