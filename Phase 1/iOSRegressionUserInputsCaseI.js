@@ -1,3 +1,4 @@
+//From Signin/signup
 var target = UIATarget.localTarget();
 var window = target.frontMostApp().mainWindow();
 

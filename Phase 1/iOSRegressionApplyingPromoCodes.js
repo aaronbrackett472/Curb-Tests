@@ -33,7 +33,7 @@ window.scrollViews()[0].buttons()["curb icon x sml"].tap();
 //Enter in the correct Promo Code
 promoField.setValue("wiltest");
 target.frontMostApp().windows()[2].buttons()["Apply code"].tap();
-window.buttons()[2].tap();//I think this button is "Ok", haven't tested yet
+target.delay(2);
 if (window.scrollViews()[0].textFields()[0].value() == "Success" &&
     window.scrollViews()[0].staticTexts()["$80.00"].isValid()){
     UIALogger.logPass("Total credits and success displayed");
