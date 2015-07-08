@@ -1,8 +1,5 @@
 //From "I'm Ready to Go/Pick Me Up Later"
-
-//Get the window element
 var target = UIATarget.localTarget();
-
 var window = target.frontMostApp().mainWindow();
 
 //Go to settings
@@ -14,17 +11,21 @@ window.tableViews()[0].cells()["Profile"].tap();
 
 //Settings fields
 var nameField = window.tableViews()[0].cells()[0].textFields()[0];
+var lnameField = window.tableViews()[0].cells()[0].textFields()[1];
 var emailField = window.tableViews()[0].cells()[1].textFields()[0];
 var phoneField = window.tableViews()[0].cells()[2].textFields()[0];
 
 //Get current values
 var currName = nameField.value();
+var currLName = lnameField.value();
 var currEmail = emailField.value();
 var currPhone = parseInt(phoneField.value());
 
 //Change Values
 var newName = currName + "a";
 nameField.setValue(newName);
+var newLName = currLName + "a";
+lnameField.setValue(newLName);
 var newEmail = "a" + currEmail;
 emailField.setValue(newEmail);
 if (currPhone == 9999999999){
@@ -38,15 +39,25 @@ phoneField.setValue(newPhone);
 
 //Check values
 function checkValues(){
-    //name
+    //first name
     if (nameField.value() == newName){
-       UIALogger.logPass("Name updated successfully");
+       UIALogger.logPass("First Name updated successfully");
     }
     else if(nameField.value() == currName){
-        UIALogger.logFail("Name failed to change");
+        UIALogger.logFail("First Name failed to change");
     }
     else{
-        UIALogger.logFail("Name changed in unexpected ways");
+        UIALogger.logFail("First Name changed in unexpected ways");
+    }
+    //last name
+    if (lnameField.value() == newLName){
+        UIALogger.logPass("Last Name updated successfully");
+    }
+    else if(lnameField.value() == currLName){
+        UIALogger.logFail("Last Name failed to change");
+    }
+    else{
+        UIALogger.logFail("Last Name changed in unexpected ways");
     }
     //email
     if (emailField.value() == newEmail){
@@ -77,8 +88,7 @@ saveButton.tap();
 
 //Back and go back in
 
-target.delay(1);//wait for the page to reload
-window = target.frontMostApp().mainWindow();//Because of refresh, need to reacquire window
+target.delay(3);//wait for the page to reload
 var backButton = window.buttons()["Back"];
 backButton.tap();
 window.tableViews()[0].cells()["Profile"].tap();
