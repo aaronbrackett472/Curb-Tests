@@ -4,7 +4,7 @@ var app = target.frontMostApp();
 var window = app.mainWindow();
 
 //Copy and pasting in the other scripts, js has no import
-function testInputCase1(){
+function testUserInputsCase1(){
     //From Signin/signup
 
     //Starting from step 5
@@ -562,7 +562,7 @@ function testPreferredProviders(){
 	    UIALogger.logFail("Not displaying AYC as a preferred provider");
 	}
 }
-function testAddCC1(){
+function testAddCC1(email){
     //Ready to go
     window.buttons()[2].tap()
     if (window.staticTexts()["Pickup Location"].isValid()){
@@ -1018,8 +1018,49 @@ function testAirports(){
 	}
 }
 
+//Other useful helper functions
+function backToSISU(){
+	window.buttons()["Back"].tap();
+}
+function backToIRTGPMUL(){
+	window.buttons()["Back"].tap();
+	window.buttons()["Close Menu"].tap();
+}
+function getEmail(){
+	window.buttons()["Settings"].tap();
+	window.tableViews()[0].cells()["Profile"].tap();
+	var rawEmail = window.tableViews()[0].cells()[1].name();
+	var email = rawEmail.replace("email: ","");
+	return email;
+}
+
+//Run the Tests 
 testUserInputsCase1();
-window.buttons()["Back"].tap();
+backToSISU();
 testUserInputsCase4();
-window.buttons()["Back"].tap();
-testAddCC();
+backToSISU();
+testAddCC2();
+backToIRTGPMUL();
+testUserInputsCase3();
+backToIRTGPMUL();
+testSettings();
+backToIRTGPMUL();
+testAirports();
+backToIRTGPMUL();
+testPreferredProviders();
+window.buttons()["Edit"].tap();
+window.tableViews()[0].cells()["Alexandria Yellow Cab"].buttons()["Delete Alexandria Yellow Cab, Tap to call (703) 549-2500"].tap();
+window.tableViews()[0].cells()["Alexandria Yellow Cab"].buttons()["Delete"].tap();
+window.buttons()["Delete"].tap();
+backToIRTGPMUL();//which will now be the map screen
+window.buttons()["Cancel Ride"].tap();
+window.buttons()[4].tap();
+window.buttons()["I got another ride"].tap();
+testProgressBar100();
+backToIRTGPMUL();
+testGeoChange();
+backToIRTGPMUL();
+testApplyPromo();
+testPayment();
+var email = getEmail;
+testAddCC1(email);
