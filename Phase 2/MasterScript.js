@@ -592,9 +592,9 @@ function testAddCC1(email){
     else{
         UIALogger.logFail("Did not display confirmation screen");
     }
-    if (window.elements()["PICK-UP Location: 5904 Richmond Hwy\n Alexandria VA"] &&
-        window.elements()["Pickup time: Now"] &&
-        window.elements()["Fleet: Alexandria Yellow Cab"]){
+    if (window.elements()["PICK-UP Location: 5904 Richmond Hwy\n Alexandria VA"].isValid() &&
+        window.elements()["Pickup time: Now"].isValid() &&
+        window.elements()["Fleet: Alexandria Yellow Cab"].isValid()){
         UIALogger.logPass("Confirmation Details are correct");
     }
     else{
@@ -603,10 +603,11 @@ function testAddCC1(email){
 
     //Select the Payment arrow
     window.images()["curb_forward_icon"].tap();
+    
+    //Go to add credit card screen
+    window.tableViews()[1].cells()["Add New Card"].tap();
 
-    /* If you have a credit card on file, you should be taken to the credit card screen
-     * But if not, you'll be taken directly to add a credit card. 
-     */
+
 
     app.keyboard().typeString("378282246310005");//Valid Amex Card Data from Wiki
     app.keyboard().typeString("722");//Random expiration date
@@ -624,7 +625,6 @@ function testAddCC1(email){
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Logout"].tap();
     window.buttons()["Yes"].tap();
-    var email = "curbautotests@gmail.com";
     var pass = "aaaaaa";
     window.staticTexts()["Sign in!"].tap();
     window.textFields()[0].setValue(email);
@@ -637,11 +637,11 @@ function testAddCC1(email){
 
     window.logElementTree();
 
-    if (window.tableViews()[0].cells()["Card 1 of 2: AMEX ending in: 0005"].isValid()){
+    if (window.tableViews()[0].cells()["Card 3 of 4: AMEX ending in: 0005"].isValid()){
         UIALogger.logPass("Credit card infor persisted after logging out and then back in");
     }
     else{
-        UIALogger.logFail(" Previously entered credit card now gone");
+        UIALogger.logFail("Previously entered credit card now gone");
     }
 }
 function testAddCC2(){
@@ -683,6 +683,7 @@ function testAddCC2(){
     app.keyboard().typeString("22303");//AVA zipcode
 
     //Check if card persists 
+    target.delay(30);
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Credit Cards"].tap();
     target.delay(1);//wait a little for card to load
@@ -976,7 +977,7 @@ function testProgressBar100(){
 	app.keyboard().typeString("UI Automated testing cancel options\n");
 	window.scrollViews()[0].buttons()["Submit"].tap();
 }
-function testAirports(){	
+function testAirports(){
 	//From I'm Ready to Go Pick me up later
 
 	//Ready to go
