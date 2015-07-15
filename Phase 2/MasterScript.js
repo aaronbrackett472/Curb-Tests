@@ -1053,7 +1053,7 @@ function getEmail(){
 }
 
 //Run the Tests 
-/*
+
 testUserInputsCase1();
 backToSISU();
 testUserInputsCase4();
@@ -1083,7 +1083,7 @@ target.delay(5);
 testGeoChange();
 window.buttons()["Back"].tap();
 testApplyPromo();
-backToIRTGPMUL();*/
+backToIRTGPMUL();
 testPayment();
 target.delay(2);
 var email = getEmail();
