@@ -674,13 +674,13 @@ function testAddCC2(){
         return email;
     }
     var randomEmail = getRandomEmail();
-    var randomNumber = String(Math.floor((Math.random()*8888888888)+1111111111));
+    var randomNumber = String(Math.floor(Math.random()*9999999));
 
     window.scrollViews()[0].textFields().firstWithValueForKey("First Name", "value").setValue("Card");
     window.scrollViews()[0].textFields().firstWithValueForKey("Last Name", "value").setValue("Test");
     window.scrollViews()[0].textFields().firstWithValueForKey("Mobile","value").tap();
     target.delay(.5);
-    app.keyboard().typeString(randomNumber);
+    app.keyboard().typeString("555" + randomNumber);
     window.scrollViews()[0].textFields().firstWithValueForKey("Email", "value").setValue(randomEmail);
     window.scrollViews()[0].secureTextFields()[0].setValue("aaaaaa");
 
