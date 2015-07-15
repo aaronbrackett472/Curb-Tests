@@ -44,7 +44,6 @@ function testUserInputsCase1(){
 
     //Test a bunch of cases for functionality. Done in a certain order to do error hierarchy
 
-    window.logElementTree();
     function create(){
         window.scrollViews()[0].buttons()["Create Account"].tap();
     }
@@ -101,7 +100,10 @@ function testUserInputsCase1(){
     }
     window.buttons()[3].tap();
 
-    //Case 4: Mobile Number invalid (too short) (First/Last entered, phone field tapped but empty)
+    //Case 4: Mobile Number invalid (too short) 
+    window.scrollViews()[0].textFields().firstWithValueForKey("Mobile","value").tap();
+    target.frontMostApp().keyboard().typeString("5");
+    closeKeyboard();
     create();
     var displayText4 = window.textViews()[0].value();
     var expectedText4 = "The Phone number you entered is invalid.";
@@ -117,8 +119,8 @@ function testUserInputsCase1(){
     window.buttons()[3].tap();
 
     //Case 5: No email (Everything entered but email and pass)
-    window.scrollViews()[0].textFields().firstWithValueForKey("+1 ","value").tap();
-    target.frontMostApp().keyboard().typeString("5555555555");
+    window.scrollViews()[0].textFields().firstWithValueForKey("5","value").tap();
+    target.frontMostApp().keyboard().typeString("555555555");
     closeKeyboard();
     create();
     var displayText5 = window.textViews()[0].value();
@@ -518,26 +520,36 @@ function testGeoChange(){
 
 	//Verify location meaningfully changed
 	window.buttons()[2].tap();
-	window.logElementTree();
+    target.delay(1);
+    if (window.searchBars()[0].value == "67 East 11th Street"){
+        UIALogger.logPass("Location appears to have meaningfully changed");
+    }
+    else{
+        UIALogger.logFail("Address not the expected default NY address");
+    }
 }
 function testPreferredProviders(){
 	//From I'm Ready To Go!/Pick Me Up Later
 
 	//Book a Ride
 	window.buttons()[2].tap();
+    target.delay(5);
 	window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
 	target.frontMostApp().mainWindow().buttons()["Search For Location, Double Tap to start searching"].tap();
 	target.frontMostApp().mainWindow().searchBars()[0].searchBars()[0].tap();
 	target.frontMostApp().mainWindow().tableViews()[1].tapWithOptions({tapOffset:{x:0.64, y:0.07}});
 
 	//From Fleet selection
-	while (!window.staticTexts()["Fleet Selection"]){
+	while (!window.staticTexts()["Fleet Selection"].isValid()){
 	    //do nothing
 	}
 	window.tableViews()[1].cells()["Alexandria Yellow Cab"].tap();
+    target.delay(3);
 	window.buttons()["Book Ride"].tap();
 	window.buttons()["Confirm"].tap();
-	target.delay(1);
+    while (!window.buttons()["Got it"].isValid()){
+        //wait for the next screen
+    }
 	window.buttons()["Got it"].tap();
 
 
@@ -565,6 +577,7 @@ function testPreferredProviders(){
 function testAddCC1(email){
     //Ready to go
     window.buttons()[2].tap()
+    target.delay(1);
     if (window.staticTexts()["Pickup Location"].isValid()){
         UIALogger.logPass("Pickup location screen displayed properly");
     }
@@ -683,7 +696,6 @@ function testAddCC2(){
     app.keyboard().typeString("22303");//AVA zipcode
 
     //Check if card persists 
-    target.delay(30);
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Credit Cards"].tap();
     target.delay(1);//wait a little for card to load
@@ -901,6 +913,7 @@ function testApplyPromo(){
     //Enter in incorrect Promo Code
     promoField.setValue("thisshouldnotwork");
     app.windows()[2].buttons()["Apply code"].tap();
+    target.delay(15);
     if (window.scrollViews()[0].textFields().firstWithValueForKey("Invalid code","value").isValid()){
         UIALogger.logPass("Invalid code properly handled");
     }
@@ -982,16 +995,18 @@ function testAirports(){
 
 	//Ready to go
 	window.buttons()[2].tap();
-	target.delay(1);
+	target.delay(2);
 
 	//Search DCA
 	window.searchBars()[0].setValue("DCA");
+    target.delay(2);
 	target.frontMostApp().mainWindow().buttons()["Search For Location, Double Tap to start searching"].tap();
 	target.frontMostApp().mainWindow().searchBars()[0].searchBars()[0].tap();
 	target.frontMostApp().keyboard().typeString("\n");
 
 	//Tap pick me up here
-	target.tap({x:209.00, y:335.00});//For some reason, this has no element attached to it
+    target.delay(10);
+    target.tap({x:192.67, y:361.00});//For some reason, this has no element attached to it
 
 	//Check for terms
 	if (window.buttons()["Term A, 1st Curb"].isValid() &&
@@ -1005,6 +1020,7 @@ function testAirports(){
 
 	//Check confirmation screen
 	window.buttons()["Term A, 1st Curb"].tap();
+    target.delay(2);
 	if (window.staticTexts()["Confirmation"].isValid()){
 	    UIALogger.logPass("Went to confirmation screen after choosing a terminal");
 	}
@@ -1030,12 +1046,14 @@ function backToIRTGPMUL(){
 function getEmail(){
 	window.buttons()["Settings"].tap();
 	window.tableViews()[0].cells()["Profile"].tap();
+    target.delay(1);
 	var rawEmail = window.tableViews()[0].cells()[1].name();
 	var email = rawEmail.replace("email: ","");
 	return email;
 }
 
 //Run the Tests 
+/*
 testUserInputsCase1();
 backToSISU();
 testUserInputsCase4();
@@ -1047,7 +1065,9 @@ backToIRTGPMUL();
 testSettings();
 backToIRTGPMUL();
 testAirports();
-backToIRTGPMUL();
+target.delay(5);
+window.buttons()["Back"].tap();
+window.buttons()["Back"].tap();
 testPreferredProviders();
 window.buttons()["Edit"].tap();
 window.tableViews()[0].cells()["Alexandria Yellow Cab"].buttons()["Delete Alexandria Yellow Cab, Tap to call (703) 549-2500"].tap();
@@ -1057,11 +1077,15 @@ backToIRTGPMUL();//which will now be the map screen
 window.buttons()["Cancel Ride"].tap();
 window.buttons()[4].tap();
 window.buttons()["I got another ride"].tap();
+target.delay(3);
 testProgressBar100();
-backToIRTGPMUL();
+target.delay(5);
 testGeoChange();
-backToIRTGPMUL();
+window.buttons()["Back"].tap();
 testApplyPromo();
+backToIRTGPMUL();*/
 testPayment();
-var email = getEmail;
+target.delay(2);
+var email = getEmail();
+backToIRTGPMUL();
 testAddCC1(email);
