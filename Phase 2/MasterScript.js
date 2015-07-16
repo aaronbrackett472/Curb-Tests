@@ -521,7 +521,7 @@ function testGeoChange(){
 	//Verify location meaningfully changed
 	window.buttons()[2].tap();
     target.delay(1);
-    if (window.searchBars()[0].value == "67 E 11th St"){
+    if (window.searchBars()[0].value() === "67 E 11th St"){
         UIALogger.logPass("Location appears to have meaningfully changed");
     }
     else{
@@ -869,7 +869,7 @@ function testPayment(){
 
     //Check to see if info is correct
     if (window.scrollViews()[0].scrollViews()[0].staticTexts()["$23.50 Credits Applied"].isValid() &&
-        window.scrollViews()[0].scrollViews()[0].staticTexts()["Total charged to VISA - 1111 was $0.00"].isValid()){
+        window.scrollViews()[0].scrollViews()[0].staticTexts()["Total charged to VISA-1111 was $0.00"].isValid()){
         UIALogger.logPass("Credits correctly applied, no charge");
     }
     else{
