@@ -521,7 +521,7 @@ function testGeoChange(){
 	//Verify location meaningfully changed
 	window.buttons()[2].tap();
     target.delay(1);
-    if (window.searchBars()[0].value == "67 East 11th Street"){
+    if (window.searchBars()[0].value == "67 E 11th St"){
         UIALogger.logPass("Location appears to have meaningfully changed");
     }
     else{
@@ -546,7 +546,18 @@ function testPreferredProviders(){
 	window.tableViews()[1].cells()["Alexandria Yellow Cab"].tap();
     target.delay(3);
 	window.buttons()["Book Ride"].tap();
-	window.buttons()["Confirm"].tap();
+    
+    //Verify phone number
+    window.tableViews()[0].cells()[2].textFields()[0].setValue("");
+    window.tableViews()[0].cells()[2].textFields()[0].tap();
+    app.keyboard().typeString("3018328979");//Aaron Brackett's personal number for now
+    window.buttons()["Done Editing"].tap();
+    target.delay(60);//Manually answer CURB
+    window.buttons()["Back"].tap();
+    
+    //Confirm booking
+    window.buttons()["Book Ride"].tap();
+    window.buttons()["Confirm"].tap();
     while (!window.buttons()["Got it"].isValid()){
         //wait for the next screen
     }
@@ -633,7 +644,7 @@ function testAddCC1(email){
     else{
         UIALogger.logFail("Payment method did not change to the new credit card");
     }
-
+/*
     //Log out log back in
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Logout"].tap();
@@ -643,12 +654,15 @@ function testAddCC1(email){
     window.textFields()[0].setValue(email);
     window.secureTextFields()[0].setValue(pass);
     window.buttons()["Sign In"].tap();
-
+*/
+    // Book ride
+    window.buttons()["Book Ride"].tap();
+    window.buttons()["Confirm"].tap();
+    window.buttons()["Got it"].tap();
+    
     //Check if card persists
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Credit Cards"].tap();
-
-    window.logElementTree();
 
     if (window.tableViews()[0].cells()["Card 3 of 4: AMEX ending in: 0005"].isValid()){
         UIALogger.logPass("Credit card infor persisted after logging out and then back in");
@@ -674,7 +688,7 @@ function testAddCC2(){
         return email;
     }
     var randomEmail = getRandomEmail();
-    var randomNumber = String(Math.floor(Math.random()*9999999));
+    var randomNumber = String(Math.floor((Math.random()*8888888)+1111111));
 
     window.scrollViews()[0].textFields().firstWithValueForKey("First Name", "value").setValue("Card");
     window.scrollViews()[0].textFields().firstWithValueForKey("Last Name", "value").setValue("Test");
@@ -710,10 +724,11 @@ function testAddCC2(){
     window.logElementTree();
     window.tableViews()[0].cells()["Add New Card"].tap();
 
-    app.keyboard().typeString("5555555555554444");//Mastercard Valid Card Number from Wiki
-    app.keyboard().typeString("424");//Random Expiration Date
-    app.keyboard().typeString("132");//Random CVV
-    app.keyboard().typeString("22303");//AVA zipcode
+    var ccNumber = "5555555555554444";//Mastercard Valid Card Number from Wiki
+    var expDate = "424";//Random Expiration Date
+    var cvv = "132";//Random CVV
+    var zipCode = "22303";//AVA zipcode
+    app.keyboard().typeString(ccNumber + expDate + cvv + zipCode);
 
 
     //Check if card persists 
@@ -764,6 +779,8 @@ function testPayment(){
 
     //Pay and verify
     target.delay(1);
+    window.elements()["Pay Now"].tap();
+    window.buttons()["Got it"].tap()//this could be incorrect, dont know if i have time
     window.elements()["Pay Now"].tap();
     if (window.staticTexts()["Fare Amount"].isValid()){
         UIALogger.logPass("User is taken to payment screen");
@@ -862,11 +879,11 @@ function testPayment(){
     //Test out ratings/description
     window.scrollViews()[0].scrollViews()[0].buttons()["Five Stars"].tap();
     window.scrollViews()[0].scrollViews()[0].textViews()[0].tap();
-    app.keyboard().typeString("Had a pretty good ride! Waaaaaaaay better than uber!");
+    app.keyboard().typeString("good ride");
 
     //Change the rating
     window.scrollViews()[0].scrollViews()[0].buttons()["Four Stars"].tap();
-    if (window.scrollViews()[0].scrollViews()[0].textViews()[0].value() == "Had a pretty good ride! Waaaaaaaay better than uber!"){
+    if (window.scrollViews()[0].scrollViews()[0].textViews()[0].value() == "good ride"){
         UIALogger.logPass("Description persists after changing rating to 4 stars");
     }
     else{
@@ -876,7 +893,7 @@ function testPayment(){
     //Go to details and go back, reverify
     window.segmentedControls()[0].buttons()["DETAILS"].tap();
     window.segmentedControls()[0].buttons()["TOTAL"].tap();
-    if (window.scrollViews()[0].scrollViews()[0].textViews()[0].value() == "Had a pretty good ride! Waaaaaaaay better than uber!"){
+    if (window.scrollViews()[0].scrollViews()[0].textViews()[0].value() == "good ride"){
         UIALogger.logPass("Description persists after changing to details and coming back");
     }
     else{
@@ -913,7 +930,7 @@ function testApplyPromo(){
     //Enter in incorrect Promo Code
     promoField.setValue("thisshouldnotwork");
     app.windows()[2].buttons()["Apply code"].tap();
-    target.delay(15);
+    target.delay(20);//lord knows why this takes so long
     if (window.scrollViews()[0].textFields().firstWithValueForKey("Invalid code","value").isValid()){
         UIALogger.logPass("Invalid code properly handled");
     }
@@ -986,8 +1003,7 @@ function testProgressBar100(){
 	//Check out these cancel rides options
 	window.buttons()[4].tap();//There are two "cancel rides", this is the one we want
 	window.buttons()["Other..."].tap();
-	window.scrollViews()[0].textViews()[0].tap();
-	app.keyboard().typeString("UI Automated testing cancel options\n");
+	window.scrollViews()[0].textViews()[0].setValue("UI Automated testing cancel options");
 	window.scrollViews()[0].buttons()["Submit"].tap();
 }
 function testAirports(){
@@ -1005,7 +1021,7 @@ function testAirports(){
 	target.frontMostApp().keyboard().typeString("\n");
 
 	//Tap pick me up here
-    target.delay(10);
+    target.delay(3);
     target.tap({x:192.67, y:361.00});//For some reason, this has no element attached to it
 
 	//Check for terms
