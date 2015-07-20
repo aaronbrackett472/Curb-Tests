@@ -539,7 +539,12 @@ function testPreferredProviders(){
 
 	//From Fleet selection
 	while (!window.staticTexts()["Fleet Selection"].isValid()){
-	    //do nothing
+        //Wait for fleets to be found
+        //in case it goes back to previous screen
+        if (!window.activityIndicators()["In progress"].isValid()){
+            window.searchBars()[0].searchBars()[0].tap();
+            app.keyboard().typeString("\n");
+        }
 	}
 	window.tableViews()[1].cells()["Alexandria Yellow Cab"].tap();
    	while (!window.staticTexts()["Confirmation"].isValid()){
@@ -605,6 +610,11 @@ function testAddCC1(email){
     window.tableViews()[1].cells()[0].tap();
     while (!window.staticTexts()["Fleet Selection"].isValid()){
         //Wait for fleets to be found
+        //in case it goes back to previous screen
+        if (!window.activityIndicators()["In progress"].isValid()){
+            window.searchBars()[0].searchBars()[0].tap();
+            app.keyboard().typeString("\n");
+        }
     }
     UIALogger.logPass("Correctly displayed Fleet Selection screen");
 
@@ -751,6 +761,11 @@ function testPayment(){
     app.keyboard().typeString("\n");
     while (!window.staticTexts()["Fleet Selection"].isValid()){
         //Wait for fleets to be found
+        //in case it goes back to previous screen
+        if (!window.activityIndicators()["In progress"].isValid()){
+            window.searchBars()[0].searchBars()[0].tap();
+            app.keyboard().typeString("\n");
+        }
     }
     window.tableViews()[1].cells()["Alexandria Yellow Cab"].tap();
     target.delay(2);
@@ -930,7 +945,9 @@ function testApplyPromo(){
     //Enter in incorrect Promo Code
     promoField.setValue("thisshouldnotwork");
     app.windows()[2].buttons()["Apply code"].tap();
-    target.delay(20);//lord knows why this takes so long
+    while (app.windows()[2].buttons()["Working..."].isValid()){
+        //wait for it to decide what to do witht the code
+    }
     if (window.scrollViews()[0].textFields().firstWithValueForKey("Invalid code","value").isValid()){
         UIALogger.logPass("Invalid code properly handled");
     }
@@ -970,7 +987,12 @@ function testProgressBar100(){
 	window.searchBars()[0].setValue("5904 Richmond Highway, Alexandria, Virginia");
 	app.keyboard().typeString("\n");
 	while (!window.staticTexts()["Fleet Selection"].isValid()){
-	    //Wait for fleets to be found
+        //Wait for fleets to be found
+        //in case it goes back to previous screen
+        if (!window.activityIndicators()["In progress"].isValid()){
+            window.searchBars()[0].searchBars()[0].tap();
+            app.keyboard().typeString("\n");
+        }
 	}
 	window.tableViews()[1].cells()["Alexandria Yellow Cab"].tap();
 	target.delay(2);
