@@ -11,7 +11,6 @@ function testUserInputsCase1(){
     var pageIndicator = window.pageIndicators()[0];
 
     for (var i = 0; i < pageIndicator.pageCount()-1; i++){
-        window.logElementTree();
         UIALogger.logMessage("Current Page: " + pageIndicator.pageIndex());
         if (pageIndicator.pageIndex() != i){
             UIALogger.logFail("Page of Index: "+ i + "failed to load/scroll properly");
@@ -26,7 +25,6 @@ function testUserInputsCase1(){
 
     //backwards
     for (var i = pageIndicator.pageCount()-1; i > 0; i--){
-        window.logElementTree();
         UIALogger.logMessage("Current Page: " + pageIndicator.pageIndex());
         if (pageIndicator.pageIndex() != i){
             UIALogger.logFail("Page of Index: "+ i + "failed to load/scroll properly");
@@ -544,7 +542,9 @@ function testPreferredProviders(){
 	    //do nothing
 	}
 	window.tableViews()[1].cells()["Alexandria Yellow Cab"].tap();
-    target.delay(3);
+   	while (!window.staticTexts()["Confirmation"].isValid()){
+        //do nothing
+    } 
 	window.buttons()["Book Ride"].tap();
     
     //Verify phone number
