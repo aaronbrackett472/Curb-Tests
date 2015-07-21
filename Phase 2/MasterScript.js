@@ -1138,13 +1138,21 @@ function getEmail(){
 	return email;
 }
 
+/* Helper Function: reset
+ * -----------------------
+ * Changes the number so that other accounts can use the number, deactivates hack mode
+ * cancels the ride, and logs out of the account so that the test can be run again. 
+ */
+ 
 function reset(){
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Profile"].tap();
     var phoneField = window.tableViews()[].cells().firstWithValueForKey("3018328979", "value");
     var finalNumber = String(Math.floor((Math.random()*8888888)+1111111));
     phoneField.setValue(finalNumber);//So that the next account we create can have the right number
-    backToIRTGPMUL();//which will now be the map screen
+    backToIRTGPMUL();
+    window.buttons()["Settings"].tap();
+    window.tableViews()[0].cells()["Deactivate Hack Mode"].tap();
     window.buttons()["Cancel Ride"].tap();
     window.buttons()[4].tap();
     window.buttons()["I got another ride"].tap();
@@ -1152,6 +1160,7 @@ function reset(){
     window.tableViews()[0].cells()["Logout"];
     window.buttons()["Yes"].tap();
 }
+
 //a necessary evil
 window.buttons()["Back"].tap();
 
@@ -1193,3 +1202,4 @@ var email = getEmail();
 backToIRTGPMUL();
 testAddCC1(email);
 backToIRTGPMUL();
+reset();
