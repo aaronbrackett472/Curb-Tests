@@ -166,6 +166,11 @@ function testUserInputsCase1(){
     }
     window.buttons()[3].tap();
 
+    //To handle the "can we text you" alert
+    UIATarget.onAlert = function onAlert(alert){
+        alert.collectionViews()[0].cells()["YES"].tap();
+        return true;
+    }
     //Case 8: Email Already Used
     window.scrollViews()[0].secureTextFields()[0].setValue("aaaaaa");
     closeKeyboard();
@@ -766,7 +771,7 @@ function testAddCC2(){
 
     //Adding credit card through the normal cc page
     window.logElementTree();
-    window.tableViews()[0].cells()["Add New Card"].tap();
+    window.tableViews()[0].cells()["Add new payment method"].tap();
 
     var ccNumber = "5555555555554444";//Mastercard Valid Card Number from Wiki
     var expDate = "424";//Random Expiration Date
@@ -1147,7 +1152,7 @@ function getEmail(){
 function reset(){
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Profile"].tap();
-    var phoneField = window.tableViews()[].cells().firstWithValueForKey("3018328979", "value");
+    var phoneField = window.tableViews()[0].cells().firstWithValueForKey("3018328979", "value");
     var finalNumber = String(Math.floor((Math.random()*8888888)+1111111));
     phoneField.setValue(finalNumber);//So that the next account we create can have the right number
     backToIRTGPMUL();
