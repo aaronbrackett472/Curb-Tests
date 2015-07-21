@@ -11,12 +11,11 @@ function testUserInputsCase1(){
     var pageIndicator = window.pageIndicators()[0];
 
     for (var i = 0; i < pageIndicator.pageCount()-1; i++){
-        UIALogger.logMessage("Current Page: " + pageIndicator.pageIndex());
         if (pageIndicator.pageIndex() != i){
-            UIALogger.logFail("Page of Index: "+ i + "failed to load/scroll properly");
+            UIALogger.logFail("Page of Index: "+ i + " failed to load/scroll properly");
         }
         else{
-            UIALogger.logPass("Page of Index:" + i + "worked correctly");
+            UIALogger.logPass("Page of Index:" + i + " worked correctly");
         }
         target.delay(1);
         window.scrollViews()[0].scrollRight();
@@ -25,12 +24,11 @@ function testUserInputsCase1(){
 
     //backwards
     for (var i = pageIndicator.pageCount()-1; i > 0; i--){
-        UIALogger.logMessage("Current Page: " + pageIndicator.pageIndex());
         if (pageIndicator.pageIndex() != i){
-            UIALogger.logFail("Page of Index: "+ i + "failed to load/scroll properly");
+            UIALogger.logFail("Page of Index: "+ i + " failed to load/scroll properly");
         }
         else{
-            UIALogger.logPass("Page of Index:" + i + "worked correctly");
+            UIALogger.logPass("Page of Index:" + i + " worked correctly");
         }
         target.delay(1);
         window.scrollViews()[0].scrollLeft();
@@ -532,7 +530,9 @@ function testPreferredProviders(){
 	//Book a Ride
 	window.buttons()[2].tap();
     target.delay(5);
-	window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
+    while (window.searchBars()[0].value() !== "5904 Richmond Hwy, 22303"){
+        window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
+    }
 	target.frontMostApp().mainWindow().buttons()["Search For Location, Double Tap to start searching"].tap();
 	target.frontMostApp().mainWindow().searchBars()[0].searchBars()[0].tap();
 	target.frontMostApp().mainWindow().tableViews()[1].tapWithOptions({tapOffset:{x:0.64, y:0.07}});
@@ -593,7 +593,7 @@ function testPreferredProviders(){
 function testAddCC1(email){
     //Ready to go
     window.buttons()[2].tap()
-    target.delay(1);
+    target.delay(2);
     if (window.staticTexts()["Pickup Location"].isValid()){
         UIALogger.logPass("Pickup location screen displayed properly");
     }
@@ -602,8 +602,10 @@ function testAddCC1(email){
     }
 
     //Selecting an address
-    window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
-    //target.tapWithOptions({x:50, y:50});
+    while (window.searchBars()[0].value() !== "5904 Richmond Hwy, 22303"){
+        window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
+    }
+ 
     window.buttons()["Search For Location, Double Tap to start searching"].tap();
     target.frontMostApp().mainWindow().searchBars()[0].searchBars()[0].tap();
     target.delay(1);//loading options
@@ -697,8 +699,12 @@ function testAddCC2(){
         email += "@gmail.com";
         return email;
     }
+    function getRandomNumber(){
+        var num = String(Math.floor((Math.random()*8888888)+1111111));
+        return num;
+    }
     var randomEmail = getRandomEmail();
-    var randomNumber = String(Math.floor((Math.random()*8888888)+1111111));
+    var randomNumber = getRandomNumber();
 
     window.scrollViews()[0].textFields().firstWithValueForKey("First Name", "value").setValue("Card");
     window.scrollViews()[0].textFields().firstWithValueForKey("Last Name", "value").setValue("Test");
@@ -708,10 +714,27 @@ function testAddCC2(){
     window.scrollViews()[0].textFields().firstWithValueForKey("Email", "value").setValue(randomEmail);
     window.scrollViews()[0].secureTextFields()[0].setValue("aaaaaa");
 
-    //Do some checking here to see if you need to get another email
-
     window.scrollViews()[0].buttons()["Create Account"].tap();
     target.delay(1);
+    
+    //Do some checking here to see if you need to get another email/phone
+    if (window.staticTexts()["Email already registered"].isValid()){
+        randomEmail = getRandomEmail();
+        window.buttons()["No"].tap();
+        window.scrollViews()[0].textFields().firstWithValueForKey("Email", "value").setValue(randomEmail);
+        window.scrollViews()[0].buttons()["Create Account"].tap();
+        target.delay(1);
+    }
+    else if (window.staticTexts()["Email already registered"].isValid()){
+        randomNumber = getRandomNumber();
+        window.buttons()["No"].tap();
+        window.scrollViews()[0].textFields().firstWithValueForKey("Mobile","value").tap();
+        target.delay(.5);
+        app.keyboard().typeString("555" + randomNumber);
+        window.scrollViews()[0].buttons()["Create Account"].tap();
+        target.delay(1);
+    }
+
 
     //Put in some credit card info
     app.keyboard().typeString("4111111111111111");//Visa Valid Card Number from Wiki
@@ -756,7 +779,9 @@ function testPayment(){
     window.buttons()[2].tap();
     target.delay(2);
     target.frontMostApp().mainWindow().buttons()["Search For Location, Double Tap to start searching"].tap();
-    window.searchBars()[0].setValue("5904 Richmond Highway, Alexandria, Virginia");
+    while (window.searchBars()[0].value() !== "5904 Richmond Hwy, 22303"){
+        window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
+    }
     window.searchBars()[0].tap();
     app.keyboard().typeString("\n");
     while (!window.staticTexts()["Fleet Selection"].isValid()){
@@ -984,7 +1009,9 @@ function testProgressBar100(){
 	target.delay(2);
 	target.frontMostApp().mainWindow().buttons()["Search For Location, Double Tap to start searching"].tap();
 	window.searchBars()[0].tap();
-	window.searchBars()[0].setValue("5904 Richmond Highway, Alexandria, Virginia");
+    while (window.searchBars()[0].value() !== "5904 Richmond Hwy, 22303"){
+        window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
+    }
 	app.keyboard().typeString("\n");
 	while (!window.staticTexts()["Fleet Selection"].isValid()){
         //Wait for fleets to be found
