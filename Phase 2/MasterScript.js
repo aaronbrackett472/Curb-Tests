@@ -15,7 +15,7 @@ function testUserInputsCase1(){
             UIALogger.logFail("Page of Index: "+ i + " failed to load/scroll properly");
         }
         else{
-            UIALogger.logPass("Page of Index:" + i + " worked correctly");
+            UIALogger.logPass("Page of Index: " + i + " worked correctly");
         }
         target.delay(1);
         window.scrollViews()[0].scrollRight();
@@ -28,7 +28,7 @@ function testUserInputsCase1(){
             UIALogger.logFail("Page of Index: "+ i + " failed to load/scroll properly");
         }
         else{
-            UIALogger.logPass("Page of Index:" + i + " worked correctly");
+            UIALogger.logPass("Page of Index: " + i + " worked correctly");
         }
         target.delay(1);
         window.scrollViews()[0].scrollLeft();
@@ -348,10 +348,10 @@ function testUserInputsCase4(){
 function testSettings(){
     //From the I'm Ready to Go/Pick Me Up Later
 
-    //Go to settings
+    //Go to Settings
     window.buttons()[1].tap();
 
-    //Test the about page
+    //Test the About Page
     window.tableViews()[0].cells()["About"].tap();
     var aboutPage = window.scrollViews()[0].webViews()[0];
     if (aboutPage.staticTexts()["Our Mission"].isValid() && aboutPage.links()["Contact"].isValid()){
@@ -362,7 +362,7 @@ function testSettings(){
     }
     window.buttons()["Back"].tap();
 
-    //Test the Terms of Use page
+    //Test the Terms of Use Page
     window.tableViews()[0].cells()["Terms of Use"].tap();
     var termsPage = window.scrollViews()[0].webViews()[0];
     if (termsPage.links()["gocurb.com"].isValid()){
@@ -538,10 +538,16 @@ function testPreferredProviders(){
 	target.frontMostApp().mainWindow().tableViews()[1].tapWithOptions({tapOffset:{x:0.64, y:0.07}});
 
 	//From Fleet selection
+    var tries = 0//How many tries we try to ping the server
 	while (!window.staticTexts()["Fleet Selection"].isValid()){
         //Wait for fleets to be found
         //in case it goes back to previous screen
         if (!window.activityIndicators()["In progress"].isValid()){
+            tries++;//hit the server and failed
+            if (tries >= 3){
+                UIALogger.logFail("Client has failed 3 times to get a response from the server in confirming an address, failed to get to Fleet Selection screen");
+                break;
+            }
             window.searchBars()[0].searchBars()[0].tap();
             app.keyboard().typeString("\n");
         }
@@ -614,6 +620,11 @@ function testAddCC1(email){
         //Wait for fleets to be found
         //in case it goes back to previous screen
         if (!window.activityIndicators()["In progress"].isValid()){
+            tries++;//hit the server and failed
+            if (tries >= 3){
+                UIALogger.logFail("Client has failed 3 times to get a response from the server in confirming an address, failed to get to Fleet Selection screen");
+                break;
+            }
             window.searchBars()[0].searchBars()[0].tap();
             app.keyboard().typeString("\n");
         }
@@ -788,6 +799,11 @@ function testPayment(){
         //Wait for fleets to be found
         //in case it goes back to previous screen
         if (!window.activityIndicators()["In progress"].isValid()){
+            tries++;//hit the server and failed
+            if (tries >= 3){
+                UIALogger.logFail("Client has failed 3 times to get a response from the server in confirming an address, failed to get to Fleet Selection screen");
+                break;
+            }
             window.searchBars()[0].searchBars()[0].tap();
             app.keyboard().typeString("\n");
         }
@@ -1017,6 +1033,11 @@ function testProgressBar100(){
         //Wait for fleets to be found
         //in case it goes back to previous screen
         if (!window.activityIndicators()["In progress"].isValid()){
+            tries++;//hit the server and failed
+            if (tries >= 3){
+                UIALogger.logFail("Client has failed 3 times to get a response from the server in confirming an address, failed to get to Fleet Selection screen");
+                break;
+            }
             window.searchBars()[0].searchBars()[0].tap();
             app.keyboard().typeString("\n");
         }
@@ -1116,6 +1137,21 @@ function getEmail(){
 	var email = rawEmail.replace("email: ","");
 	return email;
 }
+
+function reset(){
+    window.buttons()["Settings"].tap();
+    window.tableViews()[0].cells()["Profile"].tap();
+    var phoneField = window.tableViews()[].cells().firstWithValueForKey("3018328979", "value");
+    var finalNumber = String(Math.floor((Math.random()*8888888)+1111111));
+    phoneField.setValue(finalNumber);//So that the next account we create can have the right number
+    backToIRTGPMUL();//which will now be the map screen
+    window.buttons()["Cancel Ride"].tap();
+    window.buttons()[4].tap();
+    window.buttons()["I got another ride"].tap();
+    window.buttons()["Settings"];
+    window.tableViews()[0].cells()["Logout"];
+    window.buttons()["Yes"].tap();
+}
 //a necessary evil
 window.buttons()["Back"].tap();
 
@@ -1156,3 +1192,4 @@ target.delay(2);
 var email = getEmail();
 backToIRTGPMUL();
 testAddCC1(email);
+backToIRTGPMUL();
