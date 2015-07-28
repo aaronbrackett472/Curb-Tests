@@ -758,7 +758,7 @@ function testAddCC2(){
     app.keyboard().typeString("940");//Random CVV
     app.keyboard().typeString("22303");//AVA zipcode
 
-    //////TAKE A RIDE BECAUSE THERES A BUG//////////////
+    /*//////TAKE A RIDE BECAUSE THERES A BUG//////////////
     window.buttons()[2].tap();
     target.delay(2);
     target.frontMostApp().mainWindow().buttons()["Search For Location, Double Tap to start searching"].tap();
@@ -817,9 +817,11 @@ function testAddCC2(){
     }
     else{
         UIALogger.logFail("Not displaying credit card entered upon registering");
-    }
+    }*/
 
     //Adding credit card through the normal cc page
+    window.buttons()["Settings"].tap();
+    window.tableViews()[0].cells()["Credit Cards"].tap();
     window.tableViews()[0].cells()["Add new payment method"].tap();
 
     var ccNumber = "5555555555554444";//Mastercard Valid Card Number from Wiki
