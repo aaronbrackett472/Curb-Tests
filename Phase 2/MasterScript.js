@@ -644,7 +644,7 @@ function testAddCC1(email){
     else{
         UIALogger.logFail("Did not display confirmation screen");
     }
-    if (window.elements()["PICK-UP Location: 5904 Richmond Hwy \n Alexandria VA"].isValid() &&
+    if (window.elements()["PICK-UP Location: 5904 Richmond Hwy \n Alexandria Virginia"].isValid() &&
         window.elements()["Pickup Time: Now"].isValid() &&
         window.elements()["Fleet: Alexandria Yellow Cab"].isValid()){
         UIALogger.logPass("Confirmation Details are correct");
@@ -657,7 +657,7 @@ function testAddCC1(email){
     window.images()["curb_forward_icon"].tap();
     
     //Go to add credit card screen
-    window.tableViews()[1].cells()["Add New Card"].tap();
+    window.tableViews()[1].cells()["Add new payment method"].tap();
 
 
 
@@ -691,9 +691,10 @@ function testAddCC1(email){
     //Check if card persists
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Credit Cards"].tap();
-
-    if (window.tableViews()[0].cells()["Card 3 of 4: AMEX - 0005"].isValid()){
-        UIALogger.logPass("Credit card infor persisted after logging out and then back in");
+    target.delay(5)
+    
+    if (window.tableViews()[0].cells()["Card 3 of 3: American Express - 0005"].isValid()){
+        UIALogger.logPass("Credit card info persisted after logging out and then back in");
     }
     else{
         UIALogger.logFail("Previously entered credit card now gone");
@@ -758,53 +759,6 @@ function testAddCC2(){
     app.keyboard().typeString("940");//Random CVV
     app.keyboard().typeString("22303");//AVA zipcode
 
-    /*//////TAKE A RIDE BECAUSE THERES A BUG//////////////
-    window.buttons()[2].tap();
-    target.delay(2);
-    target.frontMostApp().mainWindow().buttons()["Search For Location, Double Tap to start searching"].tap();
-    window.searchBars()[0].tap();
-    while (window.searchBars()[0].value() !== "5904 Richmond Hwy, 22303"){
-        window.searchBars()[0].setValue("5904 Richmond Hwy, 22303");
-    }
-    app.keyboard().typeString("\n");
-    while (!window.staticTexts()["Fleet Selection"].isValid()){
-        //Wait for fleets to be found
-        //in case it goes back to previous screen
-        var tries = 0;
-        if (!window.activityIndicators()["In progress"].isValid()){
-            tries++;//hit the server and failed
-            if (tries >= 3){
-                UIALogger.logFail("Client has failed 3 times to get a response from the server in confirming an address, failed to get to Fleet Selection screen");
-                break;
-            }
-            window.searchBars()[0].searchBars()[0].tap();
-            app.keyboard().typeString("\n");
-        }
-    }
-    window.tableViews()[1].cells()["Alexandria Yellow Cab"].tap();
-    target.delay(2);
-    window.buttons()["Book Ride"].tap();
-    window.tableViews()[0].cells()[2].textFields()[0].setValue("");
-    window.tableViews()[0].cells()[2].textFields()[0].tap();
-    app.keyboard().typeString("3018328979");//Aaron Brackett's personal number for now
-    window.buttons()["Done Editing"].tap();
-    target.delay(60);//Manually answer CURB
-    window.buttons()["Back"].tap();
-    window.buttons()["Book Ride"].tap();
-    window.buttons()["Confirm"].tap();
-    while (!window.buttons()["Got it"].isValid()){
-        //wait for app to load
-    }
-    window.buttons()["Got it"].tap();
-
-    
-    //Check out these cancel rides options
-    window.buttons()["Cancel Ride"].tap();
-    window.buttons()[4].tap();//There are two "cancel rides", this is the one we want
-    window.buttons()["Other..."].tap();
-    window.scrollViews()[0].textViews()[0].setValue("UI Automated testing cancel options");
-    window.scrollViews()[0].buttons()["Submit"].tap();
-    
     //Check if card persists 
     target.delay(2);
     window.buttons()["Settings"].tap();
@@ -812,16 +766,14 @@ function testAddCC2(){
     target.delay(1);//wait a little for card to load
     window.logElementTree();
     target.delay(1);
-    if (window.tableViews()[0].cells()["Card 1 of 2: Visa - 4242"].isValid()){
+    if (window.tableViews()[0].cells()["Card 1 of 1: Visa - 4242"].isValid()){
         UIALogger.logPass("Credit card from registering persists");
     }
     else{
         UIALogger.logFail("Not displaying credit card entered upon registering");
-    }*/
+    }
 
     //Adding credit card through the normal cc page
-    window.buttons()["Settings"].tap();
-    window.tableViews()[0].cells()["Credit Cards"].tap();
     window.tableViews()[0].cells()["Add new payment method"].tap();
 
     var ccNumber = "5555555555554444";//Mastercard Valid Card Number from Wiki
@@ -833,8 +785,8 @@ function testAddCC2(){
 
     //Check if card persists 
     window.logElementTree();
-    target.delay(1);
-    if (window.tableViews()[0].cells()["Card 2 of 3: MasterCard - 4444"].isValid()){
+    target.delay(10);
+    if (window.tableViews()[0].cells()["Card 2 of 2: MasterCard - 4444"].isValid()){
         UIALogger.logPass("Credit card from settings persists");
     }
     else{
@@ -902,6 +854,7 @@ function testPayment(){
     else{
         UIALogger.logFail("User was not taken to payment screen after hitting pay now");
     }
+    target.delay(5)
     app.keyboard().typeString("2200");
     window.buttons()["Next"].tap();
     if (window.staticTexts()["Your Payment"].isValid()){
@@ -983,7 +936,7 @@ function testPayment(){
 
     //Check to see if info is correct
     if (//window.scrollViews()[0].scrollViews()[0].staticTexts()["$23.50 Credits Applied"].isValid() &&
-        window.scrollViews()[0].scrollViews()[0].staticTexts()["Total charged to VISA - 1111 was $0.00"].isValid()){
+        window.scrollViews()[0].scrollViews()[0].staticTexts()["Total charged to Visa - 4242 was $0.00"].isValid()){
         UIALogger.logPass("Credits correctly applied, no charge");
     }
     else{
@@ -1154,9 +1107,9 @@ function testAirports(){
     target.tap({x:192.67, y:361.00});//For some reason, this has no element attached to it
 
 	//Check for terms
-	if (window.buttons()["Term A, 1st Curb"].isValid() &&
-	    //window.buttons()["Term B, Door 4, 2nd Curb"].isValid() && //commented out because curb isnt capitalized
-	    window.buttons()["Term C, Door 11, 2nd Curb"].isValid()){
+	if (window.tableViews()[1].cells()["DCA - Term A, 1st Curb"].isValid() &&
+	    window.tableViews()[1].cells()["DCA - Term B Door 6"].isValid() &&
+	    window.tableViews()[1].cells()["DCA - Term C, Door 11, 2nd Curb"].isValid()){
 	    UIALogger.logPass("Properly displayed choices for terminals");
 	}
 	else{
@@ -1164,7 +1117,7 @@ function testAirports(){
 	}
 
 	//Check confirmation screen
-	window.buttons()["Term A, 1st Curb"].tap();
+	window.tableViews()[1].cells()["DCA - Term A, 1st Curb"].tap();
     target.delay(2);
 	if (window.staticTexts()["Confirmation"].isValid()){
 	    UIALogger.logPass("Went to confirmation screen after choosing a terminal");
@@ -1204,12 +1157,6 @@ function getEmail(){
  */
  
 function reset(){
-    window.buttons()["Settings"].tap();
-    window.tableViews()[0].cells()["Profile"].tap();
-    var phoneField = window.tableViews()[0].cells().firstWithValueForKey("3018328979", "value");
-    var finalNumber = String(Math.floor((Math.random()*8888888)+1111111));
-    phoneField.setValue(finalNumber);//So that the next account we create can have the right number
-    backToIRTGPMUL();
     window.buttons()["Settings"].tap();
     window.tableViews()[0].cells()["Deactivate Hack Mode"].tap();
     window.buttons()["Cancel Ride"].tap();
