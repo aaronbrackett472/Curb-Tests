@@ -666,7 +666,7 @@ function testAddCC1(email){
     app.keyboard().typeString("4325");//Random CVV
     app.keyboard().typeString("22303");//AVA zip code
 
-    if (window.staticTexts()["AMEX - 0005 + Applicable Fees"].isValid()){
+    if (window.staticTexts()["American Express - 0005 + Applicable Fees"].isValid()){
         UIALogger.logPass("Credit card is now the form of payment");
     }
     else{
@@ -926,17 +926,13 @@ function testPayment(){
 
     //Pay
     window.buttons()["Pay Now"].tap()
-    target.delay(2);
-    if (window.staticTexts()["Receipt"].isValid()){
-        UIALogger.logPass("User taken to receipt screen");
-    }
-    else{
-        UIALogger.logFail("Receipt screen not properly displayed");
+    while (!window.staticTexts()["Receipt"].isValid()){
+        //wait for reciept to load
     }
 
     //Check to see if info is correct
     if (//window.scrollViews()[0].scrollViews()[0].staticTexts()["$23.50 Credits Applied"].isValid() &&
-        window.scrollViews()[0].scrollViews()[0].staticTexts()["Total charged to Visa - 4242 was $0.00"].isValid()){
+        window.scrollViews()[0].scrollViews()[0].staticTexts()["Total charged to Credit Card - Visa ending in: 4242 was $0.00"].isValid()){
         UIALogger.logPass("Credits correctly applied, no charge");
     }
     else{
@@ -1162,6 +1158,7 @@ function reset(){
     window.buttons()["Cancel Ride"].tap();
     window.buttons()[4].tap();
     window.buttons()["I got another ride"].tap();
+    target.delay(10)
     window.buttons()["Settings"];
     window.tableViews()[0].cells()["Logout"];
     window.buttons()["Yes"].tap();
